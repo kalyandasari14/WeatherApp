@@ -19,7 +19,7 @@ struct WeatherData: Codable, Hashable{
     struct Weather:Codable,Hashable{
         var main: String
         var description: String
-        var icon: String
+      
     }
     
     struct Main : Codable, Hashable{
@@ -32,6 +32,39 @@ struct WeatherData: Codable, Hashable{
         var speed: Double
         var deg: Int
     }
+    
+}
+
+struct ForecastWeather:Decodable,Hashable{
+    var list: [ForecastItem]
+    
+    
+    struct ForecastItem: Decodable, Hashable{
+        var main: Main
+        var weather: [Weather]
+        var wind: Wind
+        var dt_txt: String
+        
+        
+        struct Weather: Decodable, Hashable{
+            var main: String
+            var description: String
+          
+        }
+        
+        struct Main:Decodable,Hashable{
+            var temp: Double
+            var feels_like: Double
+            var humidity: Int
+            
+        }
+        
+        struct Wind: Decodable, Hashable{
+            var speed: Double
+            var deg: Int
+        }
+    }
+    
     
 }
 

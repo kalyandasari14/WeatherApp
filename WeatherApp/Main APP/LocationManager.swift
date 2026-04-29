@@ -30,9 +30,18 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
         
         switch status {
         case .notDetermined:
+            #if os(macOS)
+            manager.requestAlwaysAuthorization()
+            #else
             manager.requestWhenInUseAuthorization()
+            #endif
+        #if os(macOS)
+        case .authorizedAlways:
+            manager.requestLocation()
+        #else
         case .authorizedWhenInUse, .authorizedAlways:
             manager.requestLocation()
+        #endif
         case .denied, .restricted:
             isLoading = false
             print("Location access denied")
@@ -46,10 +55,16 @@ class LocationManager: NSObject, CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         authorizationStatus = manager.authorizationStatus
         
+        #if os(macOS)
+        if manager.authorizationStatus == .authorizedAlways {
+            manager.requestLocation()
+        }
+        #else
         if manager.authorizationStatus == .authorizedWhenInUse || 
            manager.authorizationStatus == .authorizedAlways {
             manager.requestLocation()
         }
+        #endif
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
